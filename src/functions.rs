@@ -16,6 +16,10 @@ impl Display for ArgumentError {
     }
 }
 
+pub fn exit(_args: Vec<i32>) -> Result<i32, ArgumentError> {
+    std::process::exit(0);
+}
+
 pub fn plus(args: Vec<i32>) -> Result<i32, ArgumentError> {
     Ok(args.iter().sum())
 }
