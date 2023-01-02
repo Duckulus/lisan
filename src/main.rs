@@ -16,6 +16,9 @@ type OperationMap<'a> = HashMap<&'a str, fn(Vec<i32>) -> Result<i32, ArgumentErr
 
 fn main() {
     println!("{} v{}", PACKAGE_NAME, PACKAGE_VERSION);
+    println!("Enter 'exit' to exit");
+    println!();
+
     let mut functions: OperationMap = HashMap::new();
     functions.insert("+", functions::plus);
     functions.insert("-", functions::minus);
@@ -27,7 +30,7 @@ fn main() {
 
 fn repl(functions: &OperationMap) {
     loop {
-        print!(">");
+        print!("repl > ");
         io::stdout().flush().unwrap();
         match eval(read().as_str(), functions) {
             Ok(value) => println!("{}", value),
@@ -45,6 +48,9 @@ fn read() -> String {
 }
 
 fn eval(expression: &str, functions: &OperationMap) -> Result<i32, ArgumentError> {
+    if expression.trim() == "exit" {
+        std::process::exit(0);
+    }
     let tokens = scanner::tokenize(expression).unwrap();
     let exp = parser::parse(tokens).unwrap();
     parser::evaluate(&exp, functions)
