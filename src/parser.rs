@@ -1,6 +1,4 @@
-use std::collections::HashMap;
-
-use crate::{functions::ArgumentError, scanner::Token};
+use crate::{functions::ArgumentError, scanner::Token, OperationMap};
 
 #[derive(Debug, Clone)]
 pub struct Expression {
@@ -65,26 +63,19 @@ pub fn parse(tokens: Vec<Token>) -> Option<Expression> {
     root_expression
 }
 
-pub fn evaluate(
-    expression: &Expression,
-    functions: &HashMap<&str, fn(Vec<i32>) -> Result<i32, ArgumentError>>,
-) -> i32 {
+pub fn evaluate(expression: &Expression, functions: &OperationMap) -> Result<i32, ArgumentError> {
     let mut args: Vec<i32> = Vec::new();
     for operand in &expression.operands {
-        args.push(evaluate_iter(&operand, &functions));
+        args.push(evaluate_iter(operand, functions).unwrap());
     }
     functions
         .get(expression.operator.as_ref().unwrap().as_str())
         .unwrap()(args)
-    .unwrap()
 }
 
-fn evaluate_iter(
-    value: &ExpressionValue,
-    functions: &HashMap<&str, fn(Vec<i32>) -> Result<i32, ArgumentError>>,
-) -> i32 {
+fn evaluate_iter(value: &ExpressionValue, functions: &OperationMap) -> Result<i32, ArgumentError> {
     match value {
-        ExpressionValue::Value(x) => x.to_owned(),
-        ExpressionValue::SubExpression(exp) => evaluate(exp, &functions),
+        ExpressionValue::Value(x) => Ok(x.to_owned()),
+        ExpressionValue::SubExpression(exp) => evaluate(exp, functions),
     }
 }

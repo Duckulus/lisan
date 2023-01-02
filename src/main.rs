@@ -12,20 +12,27 @@ mod functions;
 mod parser;
 mod scanner;
 
+type OperationMap<'a> = HashMap<&'a str, fn(Vec<i32>) -> Result<i32, ArgumentError>>;
+
 fn main() {
     println!("{} v{}", PACKAGE_NAME, PACKAGE_VERSION);
-    let mut functions: HashMap<&str, fn(Vec<i32>) -> Result<i32, ArgumentError>> = HashMap::new();
+    let mut functions: OperationMap = HashMap::new();
     functions.insert("+", functions::plus);
     functions.insert("-", functions::minus);
+    functions.insert("*", functions::multiply);
+    functions.insert("square", functions::square);
 
     repl(&functions)
 }
 
-fn repl(functions: &HashMap<&str, fn(Vec<i32>) -> Result<i32, ArgumentError>>) {
+fn repl(functions: &OperationMap) {
     loop {
         print!(">");
         io::stdout().flush().unwrap();
-        println!("{}", eval(read().as_str(), functions))
+        match eval(read().as_str(), functions) {
+            Ok(value) => println!("{}", value),
+            Err(err) => eprintln!("{}", err),
+        }
     }
 }
 
@@ -37,10 +44,7 @@ fn read() -> String {
     expression
 }
 
-fn eval(
-    expression: &str,
-    functions: &HashMap<&str, fn(Vec<i32>) -> Result<i32, ArgumentError>>,
-) -> i32 {
+fn eval(expression: &str, functions: &OperationMap) -> Result<i32, ArgumentError> {
     let tokens = scanner::tokenize(expression).unwrap();
     let exp = parser::parse(tokens).unwrap();
     parser::evaluate(&exp, functions)

@@ -46,7 +46,11 @@ pub fn tokenize(expression: &str) -> Result<Vec<Token>, Error> {
             }
             Expected::Operator => {
                 if c != ' ' {
-                    tokens.push(Token::Function(c.to_string()));
+                    character_stack.push(c);
+                } else if c == ' ' && !character_stack.is_empty() {
+                    let value: String = character_stack.iter().collect();
+                    tokens.push(Token::Function(value));
+                    character_stack.clear();
                     expect = Expected::Symbol;
                 }
             }
