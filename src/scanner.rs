@@ -45,13 +45,18 @@ pub fn tokenize(expression: &str) -> Result<Vec<Token>, Error> {
                 }
             }
             Expected::Operator => {
-                if c != ' ' && c != ')' {
+                if c != ' ' && c != '(' && c != ')' {
                     character_stack.push(c);
                 } else if c == ' ' && !character_stack.is_empty() {
                     let value: String = character_stack.iter().collect();
                     tokens.push(Token::Function(value));
                     character_stack.clear();
                     expect = Expected::Symbol;
+                } else if c == '(' && !character_stack.is_empty() {
+                    let value: String = character_stack.iter().collect();
+                    tokens.push(Token::Function(value));
+                    character_stack.clear();
+                    tokens.push(Token::ExpressionStart);
                 } else if c == ')' && !character_stack.is_empty() {
                     let value: String = character_stack.iter().collect();
                     tokens.push(Token::Function(value));
