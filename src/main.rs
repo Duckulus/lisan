@@ -3,7 +3,7 @@ use std::{
     io::{self, Write},
 };
 
-use crate::functions::ArgumentError;
+use crate::functions::{setup_functions, ArgumentError};
 
 const PACKAGE_NAME: &str = env!("CARGO_PKG_NAME");
 const PACKAGE_VERSION: &str = env!("CARGO_PKG_VERSION");
@@ -12,6 +12,9 @@ mod functions;
 mod parser;
 mod scanner;
 
+#[cfg(test)]
+mod tests;
+
 type OperationMap<'a> = HashMap<&'a str, fn(Vec<i32>) -> Result<i32, ArgumentError>>;
 
 fn main() {
@@ -19,12 +22,7 @@ fn main() {
     println!("Enter '(exit)' to exit");
     println!();
 
-    let mut functions: OperationMap = HashMap::new();
-    functions.insert("exit", functions::exit);
-    functions.insert("+", functions::plus);
-    functions.insert("-", functions::minus);
-    functions.insert("*", functions::multiply);
-    functions.insert("square", functions::square);
+    let functions: OperationMap = setup_functions();
 
     repl(&functions)
 }

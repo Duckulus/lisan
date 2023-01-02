@@ -1,4 +1,6 @@
-use std::fmt::Display;
+use std::{collections::HashMap, fmt::Display};
+
+use crate::OperationMap;
 
 #[derive(Debug)]
 pub struct ArgumentError {
@@ -14,6 +16,16 @@ impl Display for ArgumentError {
             self.expected, self.got
         )
     }
+}
+
+pub fn setup_functions<'a>() -> OperationMap<'a> {
+    let mut functions: OperationMap = HashMap::new();
+    functions.insert("exit", exit);
+    functions.insert("+", plus);
+    functions.insert("-", minus);
+    functions.insert("*", multiply);
+    functions.insert("square", square);
+    functions
 }
 
 pub fn exit(_args: Vec<i32>) -> Result<i32, ArgumentError> {
