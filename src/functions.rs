@@ -8,6 +8,15 @@ pub struct ArgumentError {
     got: usize,
 }
 
+impl ArgumentError {
+    fn new(expected: &str, got: usize) -> ArgumentError {
+        ArgumentError {
+            expected: String::from(expected),
+            got,
+        }
+    }
+}
+
 impl Display for ArgumentError {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(
@@ -24,21 +33,22 @@ pub fn setup_functions<'a>() -> OperationMap<'a> {
     functions.insert("+", plus);
     functions.insert("-", minus);
     functions.insert("*", multiply);
+    functions.insert("/", divide);
     functions.insert("square", square);
     functions
 }
 
-pub fn exit(_args: Vec<f32>) -> Result<f32, ArgumentError> {
+fn exit(_args: Vec<f32>) -> Result<f32, ArgumentError> {
     std::process::exit(0);
 }
 
-pub fn plus(args: Vec<f32>) -> Result<f32, ArgumentError> {
+fn plus(args: Vec<f32>) -> Result<f32, ArgumentError> {
     Ok(args.iter().sum())
 }
 
-pub fn minus(args: Vec<f32>) -> Result<f32, ArgumentError> {
+fn minus(args: Vec<f32>) -> Result<f32, ArgumentError> {
     if args.is_empty() {
-        Ok(0.)
+        Err(ArgumentError::new(">=1", args.len()))
     } else if args.len() == 1 {
         Ok(-args.first().unwrap())
     } else {
@@ -50,7 +60,7 @@ pub fn minus(args: Vec<f32>) -> Result<f32, ArgumentError> {
     }
 }
 
-pub fn multiply(args: Vec<f32>) -> Result<f32, ArgumentError> {
+fn multiply(args: Vec<f32>) -> Result<f32, ArgumentError> {
     if args.is_empty() {
         Ok(0.)
     } else if args.len() == 1 {
@@ -64,12 +74,23 @@ pub fn multiply(args: Vec<f32>) -> Result<f32, ArgumentError> {
     }
 }
 
-pub fn square(args: Vec<f32>) -> Result<f32, ArgumentError> {
+fn divide(args: Vec<f32>) -> Result<f32, ArgumentError> {
+    if args.is_empty() {
+        Err(ArgumentError::new(">=1", args.len()))
+    } else if args.len() == 1 {
+        Ok(args.first().unwrap().to_owned())
+    } else {
+        let mut result = args.first().unwrap().to_owned();
+        for i in args.iter().take(args.len()).skip(1) {
+            result /= i;
+        }
+        Ok(result.to_owned())
+    }
+}
+
+fn square(args: Vec<f32>) -> Result<f32, ArgumentError> {
     if args.len() != 1 {
-        Err(ArgumentError {
-            expected: String::from("1"),
-            got: args.len(),
-        })
+        Err(ArgumentError::new("1", args.len()))
     } else {
         let num = args.first().unwrap().to_owned();
         Ok(multiply(vec![num, num]).unwrap())
