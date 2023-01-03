@@ -6,7 +6,7 @@ A simple Interpreter that evaluates arithmetic expressions written in lisp.
 
 ## Features
 
-- [x] Arithmetic Operations (+, -, * and square)
+- [x] Arithmetic Operations (+, -, *, / and square)
 - [x] Floating point numbers
 - [ ] User defined Functions
 - [ ] Conditionals
