@@ -8,7 +8,7 @@ pub struct Expression {
 
 #[derive(Debug, Clone)]
 enum ExpressionValue {
-    Value(i32),
+    Value(f32),
     SubExpression(Expression),
 }
 
@@ -63,8 +63,8 @@ pub fn parse(tokens: Vec<Token>) -> Option<Expression> {
     root_expression
 }
 
-pub fn evaluate(expression: &Expression, functions: &OperationMap) -> Result<i32, ArgumentError> {
-    let mut args: Vec<i32> = Vec::new();
+pub fn evaluate(expression: &Expression, functions: &OperationMap) -> Result<f32, ArgumentError> {
+    let mut args: Vec<f32> = Vec::new();
     for operand in &expression.operands {
         args.push(evaluate_iter(operand, functions).unwrap());
     }
@@ -73,7 +73,7 @@ pub fn evaluate(expression: &Expression, functions: &OperationMap) -> Result<i32
         .unwrap()(args)
 }
 
-fn evaluate_iter(value: &ExpressionValue, functions: &OperationMap) -> Result<i32, ArgumentError> {
+fn evaluate_iter(value: &ExpressionValue, functions: &OperationMap) -> Result<f32, ArgumentError> {
     match value {
         ExpressionValue::Value(x) => Ok(x.to_owned()),
         ExpressionValue::SubExpression(exp) => evaluate(exp, functions),

@@ -5,7 +5,7 @@ pub enum Token {
     ExpressionStart,
     ExpressionEnd,
     Function(String),
-    Symbol(i32),
+    Symbol(f32),
 }
 
 pub fn tokenize(expression: &str) -> Result<Vec<Token>, Error> {

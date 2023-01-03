@@ -15,7 +15,7 @@ mod scanner;
 #[cfg(test)]
 mod tests;
 
-type OperationMap<'a> = HashMap<&'a str, fn(Vec<i32>) -> Result<i32, ArgumentError>>;
+type OperationMap<'a> = HashMap<&'a str, fn(Vec<f32>) -> Result<f32, ArgumentError>>;
 
 fn main() {
     println!("{} v{}", PACKAGE_NAME, PACKAGE_VERSION);
@@ -46,7 +46,7 @@ fn read() -> String {
     expression
 }
 
-fn eval(expression: &str, functions: &OperationMap) -> Result<i32, ArgumentError> {
+fn eval(expression: &str, functions: &OperationMap) -> Result<f32, ArgumentError> {
     let tokens = scanner::tokenize(expression).unwrap();
     let exp = parser::parse(tokens).unwrap();
     parser::evaluate(&exp, functions)

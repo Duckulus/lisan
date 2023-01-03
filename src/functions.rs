@@ -28,17 +28,17 @@ pub fn setup_functions<'a>() -> OperationMap<'a> {
     functions
 }
 
-pub fn exit(_args: Vec<i32>) -> Result<i32, ArgumentError> {
+pub fn exit(_args: Vec<f32>) -> Result<f32, ArgumentError> {
     std::process::exit(0);
 }
 
-pub fn plus(args: Vec<i32>) -> Result<i32, ArgumentError> {
+pub fn plus(args: Vec<f32>) -> Result<f32, ArgumentError> {
     Ok(args.iter().sum())
 }
 
-pub fn minus(args: Vec<i32>) -> Result<i32, ArgumentError> {
+pub fn minus(args: Vec<f32>) -> Result<f32, ArgumentError> {
     if args.is_empty() {
-        Ok(0)
+        Ok(0.)
     } else if args.len() == 1 {
         Ok(-args.first().unwrap())
     } else {
@@ -50,9 +50,9 @@ pub fn minus(args: Vec<i32>) -> Result<i32, ArgumentError> {
     }
 }
 
-pub fn multiply(args: Vec<i32>) -> Result<i32, ArgumentError> {
+pub fn multiply(args: Vec<f32>) -> Result<f32, ArgumentError> {
     if args.is_empty() {
-        Ok(0)
+        Ok(0.)
     } else if args.len() == 1 {
         Ok(args.first().unwrap().to_owned())
     } else {
@@ -64,7 +64,7 @@ pub fn multiply(args: Vec<i32>) -> Result<i32, ArgumentError> {
     }
 }
 
-pub fn square(args: Vec<i32>) -> Result<i32, ArgumentError> {
+pub fn square(args: Vec<f32>) -> Result<f32, ArgumentError> {
     if args.len() != 1 {
         Err(ArgumentError {
             expected: String::from("1"),
